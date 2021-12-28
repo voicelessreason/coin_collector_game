@@ -1,5 +1,7 @@
 import sys, pygame
+from pygame import mixer
 
+mixer.init
 pygame.init()
 
 screenWidth = 1000
@@ -17,8 +19,9 @@ platformImg = pygame.image.load('img/platform.png')
 grassImg = pygame.image.load('img/grass.png')
 treeImg = pygame.image.load('img/tree.png')
 
+coinFx = pygame.mixer.Sound('sounds/coin.wav')
+
 gameState = 'menu'
-score = 0
 tileSize = 50
 lineCount = int(screenWidth / tileSize)
 
@@ -155,6 +158,7 @@ class Player:
 
         if pygame.sprite.spritecollide(self, coin_group, True):
             self.score += 1
+            coinFx.play()
 
         screen.blit(self.image, self.rect)
 
