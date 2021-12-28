@@ -17,6 +17,7 @@ platformImg = pygame.image.load('img/platform.png')
 grassImg = pygame.image.load('img/grass.png')
 treeImg = pygame.image.load('img/tree.png')
 
+gameState = 'menu'
 score = 0
 tileSize = 50
 lineCount = int(screenWidth / tileSize)
@@ -151,9 +152,8 @@ class Player:
             self.rect.left = buffer
 
         # check if we've hit a coin
-        hit_coins = pygame.sprite.spritecollide(self, coin_group, True)
-        if hit_coins:
-            coin_group.remove(hit_coins)
+
+        if pygame.sprite.spritecollide(self, coin_group, True):
             self.score += 1
 
         screen.blit(self.image, self.rect)
@@ -166,14 +166,18 @@ player = Player(tileSize, tileSize)
 run = True
 while run:
 
-    # draw the world
-    # screen.blit(skyImg, (0, 0))
-    screen.fill((255, 255, 255))
-    world.draw()
-    drawGrid()
-    player.update()
-    coin_group.draw(screen)
-    drawScore(player.score)
+    if gameState == 'menu':
+        screen.blit(skyImg, (0, 0))
+        gameState = 'main'
+    if gameState == 'main':
+        # draw the world
+        screen.fill((255, 255, 255))
+        world.draw()
+        player.update()
+        coin_group.draw(screen)
+        drawScore(player.score)
+    if gameState == 'over':
+        print('over')
 
     # check that we haven't quit
     for event in pygame.event.get():
