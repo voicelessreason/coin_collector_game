@@ -23,7 +23,7 @@ class Game:
             self.update()
             self.draw()
         self.running = False
-        pygame.mixer.music.play()
+        pygame.mixer.music.stop()
 
     # Initialize a new game...construct sprite groups, world and player objects
     def new(self):
