@@ -1,4 +1,5 @@
 import pygame
+import random
 from pygame import mixer
 from config import *
 
@@ -6,17 +7,20 @@ from config import *
 class Coin(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         img = pygame.image.load('img/coin.png')
+        self.game = game
         self.image = pygame.transform.scale(img, (TILE_SIZE // 2, TILE_SIZE // 2))
+        self.groups = [self.game.all_sprites_group, self.game.coin_group]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        pygame.sprite.Sprite.__init__(self)
+        pygame.sprite.Sprite.__init__(self, self.groups)
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         img = pygame.image.load('img/player.png')
         self.coinFx = pygame.mixer.Sound('sounds/coin.wav')
+        self.coinFx.set_volume(.3)
         self.image = pygame.transform.scale(img, (TILE_SIZE, TILE_SIZE))
         self.game = game
         self.groups = self.game.all_sprites_group

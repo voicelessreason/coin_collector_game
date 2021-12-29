@@ -11,7 +11,7 @@ class Game:
         mixer.init()
         pygame.init()
         pygame.mixer.music.load('sounds/theme.wav')
-        pygame.mixer.music.set_volume(.30)
+        pygame.mixer.music.set_volume(.10)
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
@@ -31,6 +31,7 @@ class Game:
         self.playing = True
         self.all_sprites_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
+        self.max_coin_count = 25
         self.world = World(self, WORLD_DATA)
         self.player = Player(self, TILE_SIZE, TILE_SIZE)
 

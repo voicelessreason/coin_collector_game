@@ -1,5 +1,6 @@
 import pygame
 from config import *
+import random
 from sprites import *
 
 
@@ -26,13 +27,15 @@ class World:
                     img_rect.y = row_cnt * TILE_SIZE
                     tile = (grassImg, img_rect)
                     self.tileList.append(tile)
-                if tile == 3:
-                    coin = Coin(self.game, col_cnt * TILE_SIZE, row_cnt * TILE_SIZE)
-                    self.game.coin_group.add(coin)
-                    self.game.all_sprites_group.add(coin)
                 col_cnt += 1
             row_cnt += 1
 
+    def add_coins(self):
+        if len(self.game.coin_group.sprites()) < self.game.max_coin_count:
+            Coin(self.game, random.randint(1, 18) * TILE_SIZE, random.randint(1, 18) * TILE_SIZE)
+
+
     def draw(self):
+        self.add_coins()
         for tile in self.tileList:
             self.game.screen.blit(tile[0], tile[1])
