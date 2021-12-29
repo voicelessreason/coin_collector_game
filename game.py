@@ -11,6 +11,7 @@ class Game:
         mixer.init()
         pygame.init()
         pygame.mixer.music.load('sounds/theme.wav')
+        pygame.mixer.music.set_volume(.30)
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
@@ -52,13 +53,16 @@ class Game:
         self.clock.tick(FPS)
         pygame.display.update()
 
+    def game_over(self):
+        pass
+
 
 g = Game()
 # g.intro_screen()
 g.new()
 while g.running:
     g.main()
-    g.game_over
+    g.game_over()
 
 
 pygame.quit()
