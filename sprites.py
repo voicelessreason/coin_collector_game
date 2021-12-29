@@ -1,0 +1,72 @@
+import pygame
+from pygame import mixer
+from config import *
+
+
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        img = pygame.image.load('img/coin.png')
+        self.image = pygame.transform.scale(img, (TILE_SIZE // 2, TILE_SIZE // 2))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        pygame.sprite.Sprite.__init__(self)
+
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        img = pygame.image.load('img/player.png')
+        self.coinFx = pygame.mixer.Sound('sounds/coin.wav')
+        self.image = pygame.transform.scale(img, (TILE_SIZE, TILE_SIZE))
+        self.game = game
+        self.groups = self.game.all_sprites_group
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.score = 0
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+    def update(self):
+        moveSpeed = 5
+        dx = 0
+        dy = 0
+
+        # handle key input
+        key = pygame.key.get_pressed()
+        if key[pygame.K_LEFT]:
+            dx -= moveSpeed
+        if key[pygame.K_RIGHT]:
+            dx += moveSpeed
+        if key[pygame.K_UP]:
+            dy -= moveSpeed
+        if key[pygame.K_DOWN]:
+            dy += moveSpeed
+        if key[pygame.K_j]:
+            self.score += 1
+
+        # add the delta to the the current location
+        # (no collision detection)
+        self.rect.x += dx
+        self.rect.y += dy
+
+        # Bind the player within the world
+        buffer = TILE_SIZE
+        if self.rect.bottom > SCREEN_HEIGHT - buffer:
+            self.rect.bottom = SCREEN_HEIGHT - buffer
+        if self.rect.top < TILE_SIZE:
+            self.rect.top = TILE_SIZE
+        if self.rect.right > SCREEN_WIDTH - buffer:
+            self.rect.right = SCREEN_WIDTH - buffer
+        if self.rect.left < buffer:
+            self.rect.left = buffer
+
+        # check if we've hit a coin
+
+        if pygame.sprite.spritecollide(self, self.game.coin_group, True):
+            self.score += 1
+            self.coinFx.play()
+
+    def drawScore(self):
+        font = pygame.font.SysFont(None, 48)
+        img = font.render(f'PLAYER SCORE: {self.score}', True, (0, 0, 0))
+        self.game.screen.blit(img, (TILE_SIZE, SCREEN_HEIGHT - TILE_SIZE))

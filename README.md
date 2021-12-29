@@ -8,6 +8,6 @@ The only dependency is the latest python and pygame library.
 
 and
 
-`python coinCollectorGame.py`
+`python game.py`
 
 should be enough to get you going.
