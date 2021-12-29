@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         img = pygame.image.load('img/player.png')
         self.coinFx = pygame.mixer.Sound('sounds/coin.wav')
+        self.coinFx.set_volume(.3)
         self.image = pygame.transform.scale(img, (TILE_SIZE, TILE_SIZE))
         self.game = game
         self.groups = self.game.all_sprites_group

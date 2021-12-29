@@ -30,7 +30,7 @@ class World:
                 col_cnt += 1
             row_cnt += 1
 
-    def update(self):
+    def add_coins(self):
         if len(self.game.coin_group.sprites()) < self.game.max_coin_count:
             Coin(self.game, random.randint(1, 18) * TILE_SIZE, random.randint(1, 18) * TILE_SIZE)
 
