@@ -34,7 +34,7 @@ class Game:
         self.world = World(self, WORLD_DATA)
         self.player = Player(self, TILE_SIZE, TILE_SIZE)
 
-
+    # Process any global events
     def events(self):
         # check that we haven't quit
         for event in pygame.event.get():
@@ -42,9 +42,11 @@ class Game:
                 self.playing = False
                 self.running = False
 
+    # Update all sprites
     def update(self):
         self.all_sprites_group.update()
 
+    # Draw all sprites
     def draw(self):
         self.screen.fill(WHITE)
         self.world.draw()
