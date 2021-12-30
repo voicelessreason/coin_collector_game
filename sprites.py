@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         img = pygame.image.load('img/player.png')
         self.coinFx = pygame.mixer.Sound('sounds/coin.wav')
-        self.coinFx.set_volume(.3)
+        self.coinFx.set_volume(GLOBAL_VOLUME)
         self.image = pygame.transform.scale(img, (TILE_SIZE, TILE_SIZE))
         self.game = game
         self.groups = self.game.all_sprites_group
@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def update(self):
-        moveSpeed = 5
+        moveSpeed = 10
         dx = 0
         dy = 0
 
@@ -70,7 +70,7 @@ class Player(pygame.sprite.Sprite):
             self.score += 1
             self.coinFx.play()
 
-    def drawScore(self):
+    def draw_score(self):
         font = pygame.font.SysFont(None, 48)
         img = font.render(f'PLAYER SCORE: {self.score}', True, (0, 0, 0))
         self.game.screen.blit(img, (TILE_SIZE, SCREEN_HEIGHT - TILE_SIZE))
