@@ -6,9 +6,8 @@ from config import *
 
 class Coin(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        img = pygame.image.load('img/coin.png')
+        self.image = pygame.transform.scale(pygame.image.load('img/coin.png'), (TILE_SIZE // 2, TILE_SIZE // 2))
         self.game = game
-        self.image = pygame.transform.scale(img, (TILE_SIZE // 2, TILE_SIZE // 2))
         self.groups = [self.game.all_sprites_group, self.game.coin_group]
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -18,10 +17,11 @@ class Coin(pygame.sprite.Sprite):
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        img = pygame.image.load('img/player.png')
+        self.right_image = pygame.transform.scale(pygame.image.load('img/player.png'), (TILE_SIZE, TILE_SIZE))
+        self.left_image = pygame.transform.flip(self.right_image, 180, 0)
+        self.image = self.right_image
         self.coinFx = pygame.mixer.Sound('sounds/coin.wav')
         self.coinFx.set_volume(GLOBAL_VOLUME)
-        self.image = pygame.transform.scale(img, (TILE_SIZE, TILE_SIZE))
         self.game = game
         self.groups = self.game.all_sprites_group
         self.rect = self.image.get_rect()
@@ -38,8 +38,10 @@ class Player(pygame.sprite.Sprite):
         # handle key input
         key = pygame.key.get_pressed()
         if key[pygame.K_LEFT]:
+            self.image = self.left_image
             dx -= moveSpeed
         if key[pygame.K_RIGHT]:
+            self.image = self.right_image
             dx += moveSpeed
         if key[pygame.K_UP]:
             dy -= moveSpeed
