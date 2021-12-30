@@ -29,7 +29,6 @@ class Game:
         self.playing = True
         self.all_sprites_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
-        self.max_coin_count = 50
         self.world = World(self, WORLD_DATA)
         self.player = Player(self, TILE_SIZE, TILE_SIZE)
         self.seconds = 0

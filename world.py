@@ -28,9 +28,12 @@ class World:
             row_cnt += 1
 
     def add_coins(self):
-        if len(self.game.coin_group.sprites()) < self.game.max_coin_count:
-            Coin(self.game, random.randint(1, 18) * TILE_SIZE, random.randint(1, 18) * TILE_SIZE)
-
+        while len(self.game.coin_group.sprites()) < MAX_COIN_COUNT:
+            x = random.randint(1, 18)
+            y = random.randint(1, 18)
+            Coin(self.game, x * TILE_SIZE, y * TILE_SIZE)
+            if pygame.sprite.spritecollide(self.game.player, self.game.coin_group, True):
+                self.add_coins()
 
     def draw(self):
         self.add_coins()

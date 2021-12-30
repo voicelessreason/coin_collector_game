@@ -11,3 +11,10 @@ and
 `python game.py`
 
 should be enough to get you going.
+
+
+All image assets are open source, provided by https://kenney.nl/assets.
+
+All FX sound assets are from https://freesound.org/.
+
+Theme song is by https://soundcloud.com/voicelessreason and is free to use.
