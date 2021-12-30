@@ -65,7 +65,6 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = buffer
 
         # check if we've hit a coin
-
         if pygame.sprite.spritecollide(self, self.game.coin_group, True):
             self.score += 1
             self.coinFx.play()
