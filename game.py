@@ -31,8 +31,8 @@ class Game:
         self.coin_group = pygame.sprite.Group()
         self.world = World(self, WORLD_DATA)
         self.player = Player(self, TILE_SIZE, TILE_SIZE)
-        self.seconds = 0
-        self.milliseconds = 0
+        self.scoreboard = PlayerScore(self, self.player)
+        self.game_timer = GameTimer(self)
 
     # Process any global events
     def events(self):
@@ -51,29 +51,8 @@ class Game:
         self.screen.fill(WHITE)
         self.world.draw()
         self.all_sprites_group.draw(self.screen)
-        self.draw_timer()
-        self.player.draw_score()
         self.clock.tick(FPS)
         pygame.display.update()
-
-    def draw_timer(self):
-        time_remaining = START_TIME - self.seconds
-        if self.milliseconds > 1000:
-            self.seconds += 1
-            self.milliseconds -= 1000
-        if self.seconds > 60:
-            self.minutes += 1
-            self.seconds -= 60
-        if time_remaining >= 0:
-            font = pygame.font.SysFont(None, 60)
-            text = font.render(f'{time_remaining}', True, (0, 0, 0))
-            location = ((SCREEN_WIDTH // 2) - TILE_SIZE, 0)
-            self.screen.blit(text, location)
-        else:
-            self.playing = False
-
-        # returns the time since the last time we called the function, and limits the frame rate to 60FPS
-        self.milliseconds += self.clock.tick_busy_loop(FPS)
 
     def game_over(self):
         font = pygame.font.SysFont(None, 60)

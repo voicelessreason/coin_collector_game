@@ -47,8 +47,6 @@ class Player(pygame.sprite.Sprite):
             dy -= moveSpeed
         if key[pygame.K_DOWN]:
             dy += moveSpeed
-        if key[pygame.K_j]:
-            self.score += 1
 
         # add the delta to the the current location
         # (no collision detection)
@@ -67,12 +65,53 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = buffer
 
         # check if we've hit a coin
-
         if pygame.sprite.spritecollide(self, self.game.coin_group, True):
             self.score += 1
             self.coinFx.play()
 
-    def draw_score(self):
-        font = pygame.font.SysFont(None, 48)
-        img = font.render(f'PLAYER SCORE: {self.score}', True, (0, 0, 0))
-        self.game.screen.blit(img, (TILE_SIZE, SCREEN_HEIGHT - TILE_SIZE))
+
+class PlayerScore(pygame.sprite.Sprite):
+    def __init__(self, game, player):
+        self.player = player
+        self.game = game
+        self.font = pygame.font.SysFont(None, 48)
+        self.image = self.font.render(f'PLAYER SCORE: {self.player.score}', True, (0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.x = TILE_SIZE
+        self.rect.y = SCREEN_HEIGHT - TILE_SIZE
+        self.groups = self.game.all_sprites_group
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+    def update(self):
+        self.image = self.font.render(f'PLAYER SCORE: {self.player.score}', True, (0, 0, 0))
+
+
+class GameTimer(pygame.sprite.Sprite):
+    def __init__(self, game):
+        self.game = game
+        self.seconds = 0
+        self.milliseconds = 0
+        self.time_remaining = START_TIME
+        self.groups = self.game.all_sprites_group
+        self.font = pygame.font.SysFont(None, 60)
+        self.image = self.font.render(f'{self.time_remaining}', True, (0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.x = (SCREEN_WIDTH // 2) - TILE_SIZE
+        self.rect.y = 0
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+    def update(self):
+        self.time_remaining = START_TIME - self.seconds
+        self.image = self.font.render(f'{self.time_remaining}', True, (0, 0, 0))
+
+        if self.milliseconds > 1000:
+            self.seconds += 1
+            self.milliseconds -= 1000
+        if self.seconds > 60:
+            self.minutes += 1
+            self.seconds -= 60
+        if self.time_remaining < 0:
+            self.game.playing = False
+
+        self.milliseconds += self.game.clock.tick_busy_loop(FPS)
+
