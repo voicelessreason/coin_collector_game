@@ -99,5 +99,10 @@ class GameTimer(pygame.sprite.Sprite):
     def update(self):
         seconds = (pygame.time.get_ticks() - self.start_ticks) // 1000
         time_remaining = START_TIME - seconds
+
+        if time_remaining <= 0:
+            self.game.playing = False
+
         self.image = self.font.render(f'{time_remaining}', True, (0, 0, 0))
+        self.game.clock.tick(FPS)
 

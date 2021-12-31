@@ -75,13 +75,18 @@ class Game:
         pygame.display.update()
 
     def game_over(self):
-        font = pygame.font.SysFont(None, 60)
-        game_over_text = font.render('GAME OVER!', True, BLACK)
-        score_text = font.render(f'Score: {self.player.score}', True, BLACK)
-        retry_text = font.render('Press Space to Play Again', True, BLACK)
-        game_over_location = ((SCREEN_WIDTH // 3) + TILE_SIZE, SCREEN_HEIGHT // 6)
-        score_location = ((SCREEN_WIDTH // 4) + (TILE_SIZE * 4), SCREEN_HEIGHT // 4)
-        retry_location = (SCREEN_WIDTH // 4, SCREEN_HEIGHT // 3)
+        header_font = pygame.font.SysFont(None, 60)
+        subheader_font = pygame.font.SysFont(None, 40)
+        game_over_text = header_font.render('GAME OVER!', True, BLACK)
+        score_text = subheader_font.render(f'Score: {self.player.score}', True, BLACK)
+        retry_text = subheader_font.render('Press Space to Play Again', True, BLACK)
+        quit_text = subheader_font.render('Press Escape to Quit', True, BLACK)
+
+        text_x = (SCREEN_WIDTH // 3) + TILE_SIZE
+        game_over_location = (text_x, SCREEN_HEIGHT // 2.5)
+        score_location = (text_x, SCREEN_HEIGHT // 2)
+        retry_location = (text_x, SCREEN_HEIGHT // 1.9)
+        quit_location = (text_x, SCREEN_HEIGHT // 1.8)
 
         for sprite in self.all_sprites_group:
             sprite.kill()
@@ -93,15 +98,19 @@ class Game:
 
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE]:
+                self.screen.fill(BACKGROUND_COLOR)
                 self.new()
                 self.main()
                 self.game_over()
+            if key[pygame.K_ESCAPE]:
+                self.running = False
 
             self.screen.fill(BACKGROUND_COLOR)
             self.world.draw()
             self.screen.blit(game_over_text, game_over_location)
             self.screen.blit(score_text, score_location)
             self.screen.blit(retry_text, retry_location)
+            self.screen.blit(quit_text, quit_location)
             pygame.display.update()
 
 
