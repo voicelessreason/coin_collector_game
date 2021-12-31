@@ -6,7 +6,6 @@ class World:
     def __init__(self, game, data):
         self.game = game
         self.tileList = []
-        grassImg = pygame.transform.scale(pygame.image.load('img/grass.png'), (TILE_SIZE, TILE_SIZE))
         treeImg = pygame.transform.scale(pygame.image.load('img/tree.png'), (TILE_SIZE, TILE_SIZE))
 
         row_cnt = 0
@@ -18,12 +17,6 @@ class World:
                     img_rect.x = col_cnt * TILE_SIZE
                     img_rect.y = row_cnt * TILE_SIZE
                     tile = (treeImg, img_rect)
-                    self.tileList.append(tile)
-                if tile == 2:
-                    img_rect = grassImg.get_rect()
-                    img_rect.x = col_cnt * TILE_SIZE
-                    img_rect.y = row_cnt * TILE_SIZE
-                    tile = (grassImg, img_rect)
                     self.tileList.append(tile)
                 col_cnt += 1
             row_cnt += 1

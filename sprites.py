@@ -35,15 +35,15 @@ class Player(pygame.sprite.Sprite):
 
         # handle key input
         key = pygame.key.get_pressed()
-        if key[pygame.K_LEFT]:
+        if key[pygame.K_LEFT] or key[pygame.K_a]:
             self.image = self.left_image
             dx -= moveSpeed
-        if key[pygame.K_RIGHT]:
+        if key[pygame.K_RIGHT] or key[pygame.K_d]:
             self.image = self.right_image
             dx += moveSpeed
-        if key[pygame.K_UP]:
+        if key[pygame.K_UP] or key[pygame.K_w]:
             dy -= moveSpeed
-        if key[pygame.K_DOWN]:
+        if key[pygame.K_DOWN] or key[pygame.K_s]:
             dy += moveSpeed
 
         # add the delta to the the current location
@@ -109,4 +109,3 @@ class GameTimer(pygame.sprite.Sprite):
 
         self.time_remaining = START_TIME - self.seconds
         self.milliseconds += self.game.clock.tick_busy_loop(FPS)
-

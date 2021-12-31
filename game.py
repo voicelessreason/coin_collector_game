@@ -17,7 +17,7 @@ class Game:
 
     def intro_screen(self):
         self.font = pygame.font.SysFont(None, 60)
-        self.screen.fill(WHITE)
+        self.screen.fill(BACKGROUND_COLOR)
         begin_text = self.font.render('Press Space to Begin', True, BLACK)
         begin_rect = (SCREEN_WIDTH // 4, SCREEN_HEIGHT // 3)
 
@@ -68,7 +68,7 @@ class Game:
 
     # Draw all sprites
     def draw(self):
-        self.screen.fill(WHITE)
+        self.screen.fill(BACKGROUND_COLOR)
         self.world.draw()
         self.all_sprites_group.draw(self.screen)
         self.clock.tick(FPS)
@@ -97,7 +97,7 @@ class Game:
                 self.main()
                 self.game_over()
 
-            self.screen.fill(WHITE)
+            self.screen.fill(BACKGROUND_COLOR)
             self.world.draw()
             self.screen.blit(game_over_text, game_over_location)
             self.screen.blit(score_text, score_location)
