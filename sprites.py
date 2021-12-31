@@ -87,25 +87,17 @@ class PlayerScore(pygame.sprite.Sprite):
 class GameTimer(pygame.sprite.Sprite):
     def __init__(self, game):
         self.game = game
-        self.seconds = 0
-        self.milliseconds = 0
-        self.time_remaining = START_TIME
+        self.start_ticks = pygame.time.get_ticks()
         self.groups = self.game.all_sprites_group
         self.font = pygame.font.SysFont(None, 60)
-        self.image = self.font.render(f'{self.time_remaining}', True, (0, 0, 0))
+        self.image = self.font.render(f'{START_TIME}', True, (0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.x = (SCREEN_WIDTH // 2) - TILE_SIZE
         self.rect.y = 0
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def update(self):
-        self.image = self.font.render(f'{self.time_remaining}', True, (0, 0, 0))
+        seconds = (pygame.time.get_ticks() - self.start_ticks) // 1000
+        time_remaining = START_TIME - seconds
+        self.image = self.font.render(f'{time_remaining}', True, (0, 0, 0))
 
-        if self.milliseconds > 1000:
-            self.seconds += 1
-            self.milliseconds -= 1000
-        if self.time_remaining <= 0:
-            self.game.playing = False
-
-        self.time_remaining = START_TIME - self.seconds
-        self.milliseconds += self.game.clock.tick_busy_loop(FPS)
