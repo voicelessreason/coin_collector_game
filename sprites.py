@@ -75,7 +75,7 @@ class PlayerScore(pygame.sprite.Sprite):
         self.player = player
         self.game = game
         self.font = pygame.font.SysFont(None, 48)
-        self.image = self.font.render(f'PLAYER SCORE: {self.player.score}', True, (0, 0, 0))
+        self.image = self.font.render(f'PLAYER SCORE: 0', True, (0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.x = TILE_SIZE
         self.rect.y = SCREEN_HEIGHT - TILE_SIZE
@@ -107,10 +107,7 @@ class GameTimer(pygame.sprite.Sprite):
         if self.milliseconds > 1000:
             self.seconds += 1
             self.milliseconds -= 1000
-        if self.seconds > 60:
-            self.minutes += 1
-            self.seconds -= 60
-        if self.time_remaining < 0:
+        if self.time_remaining <= 0:
             self.game.playing = False
 
         self.milliseconds += self.game.clock.tick_busy_loop(FPS)

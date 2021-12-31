@@ -75,12 +75,13 @@ class Game:
             if key[pygame.K_SPACE]:
                 self.new()
                 self.main()
+                self.game_over()
 
             self.screen.fill(WHITE)
             self.world.draw()
             self.screen.blit(game_over_text, game_over_location)
-            self.screen.blit(retry_text, retry_location)
             self.screen.blit(score_text, score_location)
+            self.screen.blit(retry_text, retry_location)
             pygame.display.update()
 
 
