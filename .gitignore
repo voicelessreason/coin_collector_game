@@ -1,2 +1,5 @@
 setup.py
 build/
+.DS_Store
+.idea/
+__pycache__

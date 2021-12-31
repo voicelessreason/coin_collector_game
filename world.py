@@ -1,4 +1,5 @@
 from sprites import *
+import random
 
 
 class World:

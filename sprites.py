@@ -1,6 +1,4 @@
 import pygame
-import random
-from pygame import mixer
 from config import *
 
 
@@ -101,7 +99,6 @@ class GameTimer(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def update(self):
-        self.time_remaining = START_TIME - self.seconds
         self.image = self.font.render(f'{self.time_remaining}', True, (0, 0, 0))
 
         if self.milliseconds > 1000:
@@ -110,5 +107,6 @@ class GameTimer(pygame.sprite.Sprite):
         if self.time_remaining <= 0:
             self.game.playing = False
 
+        self.time_remaining = START_TIME - self.seconds
         self.milliseconds += self.game.clock.tick_busy_loop(FPS)
 

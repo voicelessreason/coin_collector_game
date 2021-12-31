@@ -1,4 +1,5 @@
 import sys
+from pygame import mixer
 from world import World
 from sprites import *
 from config import *
@@ -13,6 +14,25 @@ class Game:
         pygame.mixer.music.set_volume(GLOBAL_VOLUME)
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.running = True
+
+    def intro_screen(self):
+        self.font = pygame.font.SysFont(None, 60)
+        self.screen.fill(WHITE)
+        begin_text = self.font.render('Press Space to Begin', True, BLACK)
+        begin_rect = (SCREEN_WIDTH // 4, SCREEN_HEIGHT // 3)
+
+        self.screen.blit(begin_text, begin_rect)
+
+        while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+            key = pygame.key.get_pressed()
+            if key[pygame.K_SPACE]:
+                return
+
+            pygame.display.update()
 
     # Main Game Loop
     def main(self):
@@ -86,7 +106,7 @@ class Game:
 
 
 g = Game()
-# g.intro_screen()
+g.intro_screen()
 g.new()
 while g.running:
     g.main()
