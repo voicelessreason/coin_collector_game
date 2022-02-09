@@ -1,4 +1,4 @@
-import pygame
+import pygame, copy
 from config import *
 
 
@@ -20,6 +20,8 @@ class Player(pygame.sprite.Sprite):
         self.image = self.right_image
         self.coinFx = pygame.mixer.Sound('sounds/coin.wav')
         self.coinFx.set_volume(GLOBAL_VOLUME)
+        self.deathFx = pygame.mixer.Sound('sounds/game_over.wav')
+        self.deathFx.set_volume(100)
         self.game = game
         self.groups = self.game.all_sprites_group
         self.rect = self.image.get_rect()
@@ -47,7 +49,6 @@ class Player(pygame.sprite.Sprite):
             dy += moveSpeed
 
         # add the delta to the the current location
-        # (no collision detection)
         self.rect.x += dx
         self.rect.y += dy
 
@@ -66,6 +67,10 @@ class Player(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, self.game.coin_group, True):
             self.score += 1
             self.coinFx.play()
+
+        if pygame.sprite.spritecollide(self, self.game.enemy_group, False):
+            self.deathFx.play()
+            self.game.playing = False
 
 
 class PlayerScore(pygame.sprite.Sprite):
@@ -106,3 +111,34 @@ class GameTimer(pygame.sprite.Sprite):
         self.image = self.font.render(f'{time_remaining}', True, (0, 0, 0))
         self.game.clock.tick(FPS)
 
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, game, x, y, speed):
+        self.game = game
+        self.moveSpeed = speed
+        self.groups = [self.game.all_sprites_group, self.game.enemy_group]
+        self.right_image = pygame.transform.scale(pygame.image.load('img/enemy.png'), (TILE_SIZE, TILE_SIZE))
+        self.left_image = pygame.transform.flip(self.right_image, 180, 0)
+        self.image = self.right_image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+    def update(self):
+        dx = 0
+        dy = 0
+        xdiff = self.rect.x - self.game.player.rect.x
+        ydiff = self.rect.y - self.game.player.rect.y
+
+        if xdiff > 0:
+            dx -= self.moveSpeed
+        if xdiff < 0:
+            dx += self.moveSpeed
+        if ydiff < 0:
+            dy += self.moveSpeed
+        if ydiff > 0:
+            dy -= self.moveSpeed
+
+        self.rect.x += dx
+        self.rect.y += dy

@@ -29,7 +29,16 @@ class World:
             if pygame.sprite.spritecollide(self.game.player, self.game.coin_group, True):
                 self.add_coins()
 
+    def add_enemies(self):
+        while len(self.game.enemy_group.sprites()) < MAX_ENEMY_COUNT:
+            x = random.randint(1, 18)
+            y = random.randint(1, 18)
+            speed = random.randint(1, 5)
+            Enemy(self.game, x * TILE_SIZE,  y * TILE_SIZE, speed)
+
+
     def draw(self):
         self.add_coins()
+        self.add_enemies()
         for tile in self.tileList:
             self.game.screen.blit(tile[0], tile[1])

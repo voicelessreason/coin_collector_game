@@ -49,6 +49,7 @@ class Game:
         self.playing = True
         self.all_sprites_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
+        self.enemy_group = pygame.sprite.Group()
         self.world = World(self, WORLD_DATA)
         self.player = Player(self, TILE_SIZE, TILE_SIZE)
         self.scoreboard = PlayerScore(self, self.player)
