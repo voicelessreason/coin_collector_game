@@ -33,9 +33,8 @@ class World:
         while len(self.game.enemy_group.sprites()) < MAX_ENEMY_COUNT:
             x = random.randint(1, 18)
             y = random.randint(1, 18)
-            speed = random.randint(1, 5)
+            speed = random.randint(2, 6)
             Enemy(self.game, x * TILE_SIZE,  y * TILE_SIZE, speed)
-
 
     def draw(self):
         self.add_coins()
