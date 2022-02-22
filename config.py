@@ -34,4 +34,4 @@ WORLD_DATA = [
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
 MAX_COIN_COUNT = 30
-MAX_ENEMY_COUNT = 3
+ENEMY_COUNT = 5

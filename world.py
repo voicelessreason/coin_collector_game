@@ -30,10 +30,10 @@ class World:
                 self.add_coins()
 
     def add_enemies(self):
-        while len(self.game.enemy_group.sprites()) < MAX_ENEMY_COUNT:
-            x = random.randint(1, 18)
-            y = random.randint(1, 18)
-            speed = random.randint(2, 6)
+        while len(self.game.enemy_group.sprites()) < ENEMY_COUNT:
+            x = random.randint(3, 18)
+            y = random.randint(3, 18)
+            speed = random.randint(2, 3)
             Enemy(self.game, x * TILE_SIZE,  y * TILE_SIZE, speed)
 
     def draw(self):

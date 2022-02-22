@@ -114,8 +114,11 @@ class GameTimer(pygame.sprite.Sprite):
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, game, x, y, speed):
+        self.onScreen = True
         self.game = game
         self.moveSpeed = speed
+        self.explosionFx = pygame.mixer.Sound('sounds/explosion.wav')
+        self.explosionFx.set_volume(GLOBAL_VOLUME)
         self.groups = [self.game.all_sprites_group, self.game.enemy_group]
         self.right_image = pygame.transform.scale(pygame.image.load('img/enemy.png'), (TILE_SIZE, TILE_SIZE))
         self.left_image = pygame.transform.flip(self.right_image, 180, 0)
@@ -126,6 +129,9 @@ class Enemy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def update(self):
+        if self.onScreen == False:
+            return
+
         dx = 0
         dy = 0
         xdiff = self.rect.x - self.game.player.rect.x
@@ -142,3 +148,12 @@ class Enemy(pygame.sprite.Sprite):
 
         self.rect.x += dx
         self.rect.y += dy
+
+        collisions = pygame.sprite.spritecollide(self, self.game.enemy_group, False)
+        if len(collisions) > 2:
+            self.explosionFx.play()
+            self.onScreen = False
+            self.rect.x = -1000
+            self.rect.y = -1000
+            self.game.enemy_group.remove(self)
+            self.game.player.score += 5
