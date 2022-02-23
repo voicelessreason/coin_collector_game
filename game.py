@@ -50,6 +50,7 @@ class Game:
         self.all_sprites_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
         self.enemy_group = pygame.sprite.Group()
+        self.explosion_group = pygame.sprite.Group()
         self.world = World(self, WORLD_DATA)
         self.player = Player(self, TILE_SIZE, TILE_SIZE)
         self.scoreboard = PlayerScore(self, self.player)
@@ -91,6 +92,8 @@ class Game:
 
         for sprite in self.all_sprites_group:
             sprite.kill()
+
+        self.screen.fill(BACKGROUND_COLOR)
 
         while self.running:
             for event in pygame.event.get():
