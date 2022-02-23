@@ -1,4 +1,4 @@
-import pygame, copy
+import pygame, random
 from config import *
 
 
@@ -134,8 +134,8 @@ class Enemy(pygame.sprite.Sprite):
 
         dx = 0
         dy = 0
-        xdiff = self.rect.x - self.game.player.rect.x
-        ydiff = self.rect.y - self.game.player.rect.y
+        xdiff = self.rect.x - self.game.player.rect.x + random.randint(-10, 10)
+        ydiff = self.rect.y - self.game.player.rect.y + random.randint(-10, 10)
 
         if xdiff > 0:
             dx -= self.moveSpeed
@@ -152,8 +152,42 @@ class Enemy(pygame.sprite.Sprite):
         collisions = pygame.sprite.spritecollide(self, self.game.enemy_group, False)
         if len(collisions) > 2:
             self.explosionFx.play()
+            Explosion(self.game, self.rect.x, self.rect.y)
             self.onScreen = False
             self.rect.x = -1000
             self.rect.y = -1000
             self.game.enemy_group.remove(self)
             self.game.player.score += 5
+
+
+class Explosion(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        self.groups = [self.game.all_sprites_group, self.game.explosion_group]
+        self.images = [pygame.image.load('img/explosion1.png'),
+                       pygame.image.load('img/explosion2.png'),
+                       pygame.image.load('img/explosion3.png'),
+                       pygame.image.load('img/explosion4.png'),
+                       pygame.image.load('img/explosion5.png')]
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.counter = 0
+        self.index = 0
+        self.explosion_speed = 2
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+    def update(self):
+        self.counter += 1
+        if self.counter >= self.explosion_speed:
+            self.index += 1
+            self.counter = 0
+
+        if self.index < len(self.images):
+            self.image = self.images[self.index]
+        else:
+            self.kill()
+
+    def draw(self):
+        self.game.screen.blit(self.image)
