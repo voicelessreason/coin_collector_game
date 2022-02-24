@@ -78,7 +78,7 @@ class PlayerScore(pygame.sprite.Sprite):
         self.player = player
         self.game = game
         self.font = pygame.font.SysFont(None, 48)
-        self.image = self.font.render(f'PLAYER SCORE: 0', True, (0, 0, 0))
+        self.image = self.font.render(f'SCORE: 0', True, TEXT_COLOR)
         self.rect = self.image.get_rect()
         self.rect.x = TILE_SIZE
         self.rect.y = SCREEN_HEIGHT - TILE_SIZE
@@ -86,7 +86,7 @@ class PlayerScore(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def update(self):
-        self.image = self.font.render(f'PLAYER SCORE: {self.player.score}', True, (0, 0, 0))
+        self.image = self.font.render(f'SCORE: {self.player.score}', True, TEXT_COLOR)
 
 
 class GameTimer(pygame.sprite.Sprite):
@@ -95,10 +95,10 @@ class GameTimer(pygame.sprite.Sprite):
         self.start_ticks = pygame.time.get_ticks()
         self.groups = self.game.all_sprites_group
         self.font = pygame.font.SysFont(None, 60)
-        self.image = self.font.render(f'{START_TIME}', True, (0, 0, 0))
+        self.image = self.font.render(f'{START_TIME}', True, TEXT_COLOR)
         self.rect = self.image.get_rect()
         self.rect.x = (SCREEN_WIDTH // 2) - TILE_SIZE
-        self.rect.y = 0
+        self.rect.y = TILE_SIZE
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def update(self):
@@ -108,7 +108,7 @@ class GameTimer(pygame.sprite.Sprite):
         if time_remaining <= 0:
             self.game.playing = False
 
-        self.image = self.font.render(f'{time_remaining}', True, (0, 0, 0))
+        self.image = self.font.render(f'{time_remaining}', True, TEXT_COLOR)
         self.game.clock.tick(FPS)
 
 

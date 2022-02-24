@@ -17,9 +17,10 @@ class Game:
 
     def intro_screen(self):
         self.font = pygame.font.SysFont(None, 60)
-        self.screen.fill(BACKGROUND_COLOR)
-        begin_text = self.font.render('Press Space to Begin', True, BLACK)
-        begin_rect = (SCREEN_WIDTH // 4, SCREEN_HEIGHT // 3)
+        self.bg = pygame.image.load('img/space.jpeg')
+        self.screen.blit(self.bg, (0, 0))
+        begin_text = self.font.render('Press Space to Begin', True, TEXT_COLOR)
+        begin_rect = ((SCREEN_WIDTH // 4) + TILE_SIZE, SCREEN_HEIGHT // 3)
 
         self.screen.blit(begin_text, begin_rect)
 
@@ -70,7 +71,6 @@ class Game:
 
     # Draw all sprites
     def draw(self):
-        self.screen.fill(BACKGROUND_COLOR)
         self.world.draw()
         self.all_sprites_group.draw(self.screen)
         self.clock.tick(FPS)
@@ -79,10 +79,10 @@ class Game:
     def game_over(self):
         header_font = pygame.font.SysFont(None, 60)
         subheader_font = pygame.font.SysFont(None, 40)
-        game_over_text = header_font.render('GAME OVER!', True, BLACK)
-        score_text = subheader_font.render(f'Score: {self.player.score}', True, BLACK)
-        retry_text = subheader_font.render('Press Space to Play Again', True, BLACK)
-        quit_text = subheader_font.render('Press Escape to Quit', True, BLACK)
+        game_over_text = header_font.render('GAME OVER!', True, TEXT_COLOR)
+        score_text = subheader_font.render(f'Score: {self.player.score}', True, TEXT_COLOR)
+        retry_text = subheader_font.render('Press Space to Play Again', True, TEXT_COLOR)
+        quit_text = subheader_font.render('Press Escape to Quit', True, TEXT_COLOR)
 
         text_x = (SCREEN_WIDTH // 3) + TILE_SIZE
         game_over_location = (text_x, SCREEN_HEIGHT // 2.5)
@@ -93,8 +93,6 @@ class Game:
         for sprite in self.all_sprites_group:
             sprite.kill()
 
-        self.screen.fill(BACKGROUND_COLOR)
-
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -102,14 +100,17 @@ class Game:
 
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE]:
-                self.screen.fill(BACKGROUND_COLOR)
+                for sprite in self.all_sprites_group:
+                    sprite.kill()
+
+                self.screen.blit(self.bg, (0, 0))
                 self.new()
                 self.main()
                 self.game_over()
             if key[pygame.K_ESCAPE]:
                 self.running = False
 
-            self.screen.fill(BACKGROUND_COLOR)
+            self.screen.blit(self.bg, (0, 0))
             self.world.draw()
             self.screen.blit(game_over_text, game_over_location)
             self.screen.blit(score_text, score_location)
