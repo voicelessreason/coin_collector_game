@@ -6,7 +6,7 @@ class World:
     def __init__(self, game, data):
         self.game = game
         self.tileList = []
-        treeImg = pygame.transform.scale(pygame.image.load('img/tree.png'), (TILE_SIZE, TILE_SIZE))
+        treeImg = pygame.transform.scale(pygame.image.load('img/asteroid.png'), (TILE_SIZE, TILE_SIZE))
 
         row_cnt = 0
         for row in data:
@@ -37,7 +37,9 @@ class World:
             Enemy(self.game, x * TILE_SIZE,  y * TILE_SIZE, speed)
 
     def draw(self):
+        self.game.screen.blit(self.game.bg, (0, 0))
         self.add_coins()
         self.add_enemies()
         for tile in self.tileList:
             self.game.screen.blit(tile[0], tile[1])
+
