@@ -12,12 +12,12 @@ class Game:
         pygame.init()
         pygame.mixer.music.load('sounds/theme.wav')
         pygame.mixer.music.set_volume(GLOBAL_VOLUME)
+        self.bg = pygame.image.load('img/space.jpeg')
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.running = True
 
     def intro_screen(self):
         self.font = pygame.font.SysFont(None, 60)
-        self.bg = pygame.image.load('img/space.jpeg')
         self.screen.blit(self.bg, (0, 0))
         begin_text = self.font.render('Press Space to Begin', True, TEXT_COLOR)
         begin_rect = ((SCREEN_WIDTH // 4) + TILE_SIZE, SCREEN_HEIGHT // 3)

@@ -5,7 +5,6 @@ import random
 class World:
     def __init__(self, game, data):
         self.game = game
-        self.bg = pygame.image.load('img/space.jpeg')
         self.tileList = []
         treeImg = pygame.transform.scale(pygame.image.load('img/asteroid.png'), (TILE_SIZE, TILE_SIZE))
 
@@ -38,7 +37,7 @@ class World:
             Enemy(self.game, x * TILE_SIZE,  y * TILE_SIZE, speed)
 
     def draw(self):
-        self.game.screen.blit(self.bg, (0, 0))
+        self.game.screen.blit(self.game.bg, (0, 0))
         self.add_coins()
         self.add_enemies()
         for tile in self.tileList:
