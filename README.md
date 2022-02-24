@@ -12,8 +12,8 @@ and
 
 should be enough to get you going.
 
-
-All image assets are open source, provided by https://kenney.nl/assets.
+Asteroid PNG from https://www.seekpng.com/, it is free for personal use only (good thing this game is free)
+All other image assets are open source, provided by https://kenney.nl/assets.
 
 All FX sound assets are from https://freesound.org/:
 - Coin and explosion sound effects from https://freesound.org/people/ProjectsU012/sounds/341695
