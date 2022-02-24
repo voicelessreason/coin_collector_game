@@ -98,7 +98,7 @@ class GameTimer(pygame.sprite.Sprite):
         self.image = self.font.render(f'{START_TIME}', True, TEXT_COLOR)
         self.rect = self.image.get_rect()
         self.rect.x = (SCREEN_WIDTH // 2) - TILE_SIZE
-        self.rect.y = TILE_SIZE
+        self.rect.y = 0
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def update(self):
