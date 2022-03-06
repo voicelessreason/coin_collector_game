@@ -17,7 +17,7 @@ class Game:
         self.running = True
 
     def intro_screen(self):
-        self.font = pygame.font.SysFont(None, 60)
+        self.font = pygame.font.SysFont(None, HEADER_FONT_SIZE)
         self.screen.blit(self.bg, (0, 0))
         begin_text = self.font.render('Press Space to Begin', True, TEXT_COLOR)
         begin_rect = ((SCREEN_WIDTH // 4) + TILE_SIZE, SCREEN_HEIGHT // 3)
@@ -77,8 +77,8 @@ class Game:
         pygame.display.update()
 
     def game_over(self):
-        header_font = pygame.font.SysFont(None, 60)
-        subheader_font = pygame.font.SysFont(None, 40)
+        header_font = pygame.font.SysFont(None, HEADER_FONT_SIZE)
+        subheader_font = pygame.font.SysFont(None, SUBHEADER_FONT_SIZE)
         game_over_text = header_font.render('GAME OVER!', True, TEXT_COLOR)
         score_text = subheader_font.render(f'Score: {self.player.score}', True, TEXT_COLOR)
         retry_text = subheader_font.render('Press Space to Play Again', True, TEXT_COLOR)
