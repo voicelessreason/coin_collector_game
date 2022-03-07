@@ -1,11 +1,19 @@
-from ctypes import windll, byref
-import ctypes.wintypes
-from turtle import screensize
+import platform
+
+if('Windows' in platform.system()):
+   IS_WINDOWS = True
+   try:
+      from ctypes import windll, byref
+      import ctypes.wintypes
+   except:
+      IS_WINDOWS = False
+else:
+   IS_WINDOWS = False
 
 class Display:
 
    @classmethod
-   def get_screen_size(cls):
+   def get_windows_screen_size(cls):
       '''
       Get the dimensions of the area in which the game window can be drawn
       without overflowing.
@@ -63,12 +71,13 @@ class Display:
       Returns:
       An integer, which is the minimum of SCREEN_WIDTH, SCREEN_HEIGHT, and 1000px.
       '''
-      screen_size = cls.get_screen_size()
-      if(-1 in screen_size):
-         return max
+      if(IS_WINDOWS):
+         screen_size = cls.get_windows_screen_size()
+         if(-1 in screen_size):
+            return max
+         else:
+            smallest_dimension = min(screen_size)
+            max_window = min(smallest_dimension, max)
+            return max_window 
       else:
-         smallest_dimension = min(screen_size)
-         max_window = min(smallest_dimension, max)
-      return max_window
-
-#print(Display.get_max_window(1000))
+         return max
