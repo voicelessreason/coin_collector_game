@@ -1,5 +1,6 @@
 import sys
 from pygame import mixer
+from fullscreen_helper import FullscreenHelper
 from world import World
 from sprites import *
 from config import *
@@ -12,15 +13,21 @@ class Game:
         pygame.init()
         pygame.mixer.music.load('sounds/theme.wav')
         pygame.mixer.music.set_volume(GLOBAL_VOLUME)
+
+        desktop_size = pygame.display.get_desktop_sizes()[0]
+        self.fh = FullscreenHelper(desktop_size)
+        
         self.bg = pygame.image.load('img/space.jpeg')
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        # Scale the background image to match the desktop resolution
+        self.bg = pygame.transform.scale(self.bg, self.fh.desktop_resolution)
+        self.screen = pygame.display.set_mode(self.fh.desktop_resolution)
         self.running = True
 
     def intro_screen(self):
         self.font = pygame.font.SysFont(None, 60)
         self.screen.blit(self.bg, (0, 0))
         begin_text = self.font.render('Press Space to Begin', True, TEXT_COLOR)
-        begin_rect = ((SCREEN_WIDTH // 4) + TILE_SIZE, SCREEN_HEIGHT // 3)
+        begin_rect = ((self.fh.actual_play_area_size[0] // 4) + self.fh.tile_size, self.fh.actual_play_area_size[1] // 3)
 
         self.screen.blit(begin_text, begin_rect)
 
@@ -52,10 +59,10 @@ class Game:
         self.coin_group = pygame.sprite.Group()
         self.enemy_group = pygame.sprite.Group()
         self.explosion_group = pygame.sprite.Group()
-        self.world = World(self, WORLD_DATA)
-        self.player = Player(self, TILE_SIZE, TILE_SIZE)
-        self.scoreboard = PlayerScore(self, self.player)
-        self.game_timer = GameTimer(self)
+        self.world = World(self, WORLD_DATA, self.fh)
+        self.player = Player(self, self.fh)
+        self.scoreboard = PlayerScore(self, self.player, self.fh)
+        self.game_timer = GameTimer(self, self.fh)
 
     # Process any global events
     def events(self):
@@ -77,18 +84,18 @@ class Game:
         pygame.display.update()
 
     def game_over(self):
-        header_font = pygame.font.SysFont(None, 60)
-        subheader_font = pygame.font.SysFont(None, 40)
+        header_font = pygame.font.SysFont(None, self.fh.actual_header_font_size)
+        subheader_font = pygame.font.SysFont(None, self.fh.actual_subheader_font_size)
         game_over_text = header_font.render('GAME OVER!', True, TEXT_COLOR)
         score_text = subheader_font.render(f'Score: {self.player.score}', True, TEXT_COLOR)
         retry_text = subheader_font.render('Press Space to Play Again', True, TEXT_COLOR)
         quit_text = subheader_font.render('Press Escape to Quit', True, TEXT_COLOR)
 
-        text_x = (SCREEN_WIDTH // 3) + TILE_SIZE
-        game_over_location = (text_x, SCREEN_HEIGHT // 2.5)
-        score_location = (text_x, SCREEN_HEIGHT // 2)
-        retry_location = (text_x, SCREEN_HEIGHT // 1.9)
-        quit_location = (text_x, SCREEN_HEIGHT // 1.8)
+        text_x = (self.fh.actual_play_area_size[0] // 3) + self.fh.tile_size
+        game_over_location = (text_x, self.fh.actual_play_area_size[1] // 2.5)
+        score_location = (text_x, self.fh.actual_play_area_size[1] // 2)
+        retry_location = (text_x, self.fh.actual_play_area_size[1] // 1.9)
+        quit_location = (text_x, self.fh.actual_play_area_size[1] // 1.8)
 
         for sprite in self.all_sprites_group:
             sprite.kill()

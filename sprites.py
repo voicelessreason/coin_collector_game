@@ -3,8 +3,8 @@ from config import *
 
 
 class Coin(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.image = pygame.transform.scale(pygame.image.load('img/coin.png'), (TILE_SIZE // 2, TILE_SIZE // 2))
+    def __init__(self, game, x, y, tile_size):
+        self.image = pygame.transform.scale(pygame.image.load('img/coin.png'), (tile_size // 2, tile_size // 2))
         self.game = game
         self.groups = [self.game.all_sprites_group, self.game.coin_group]
         self.rect = self.image.get_rect()
@@ -14,8 +14,10 @@ class Coin(pygame.sprite.Sprite):
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.right_image = pygame.transform.scale(pygame.image.load('img/player.png'), (TILE_SIZE, TILE_SIZE))
+    def __init__(self, game, fullscreen_helper):
+        self.fh = fullscreen_helper
+        self.tile_dimensions = (self.fh.tile_size, self.fh.tile_size)
+        self.right_image = pygame.transform.scale(pygame.image.load('img/player.png'), self.tile_dimensions)
         self.left_image = pygame.transform.flip(self.right_image, 180, 0)
         self.image = self.right_image
         self.coinFx = pygame.mixer.Sound('sounds/coin.wav')
@@ -25,8 +27,8 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.groups = self.game.all_sprites_group
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = self.tile_dimensions[0]
+        self.rect.y = self.tile_dimensions[1]
         self.score = 0
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -53,13 +55,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += dy
 
         # Bind the player within the world
-        buffer = TILE_SIZE
-        if self.rect.bottom > SCREEN_HEIGHT - buffer:
-            self.rect.bottom = SCREEN_HEIGHT - buffer
-        if self.rect.top < TILE_SIZE:
-            self.rect.top = TILE_SIZE
-        if self.rect.right > SCREEN_WIDTH - buffer:
-            self.rect.right = SCREEN_WIDTH - buffer
+        buffer = self.fh.tile_size
+        if self.rect.bottom > self.fh.actual_play_area_size[1] - buffer:
+            self.rect.bottom = self.fh.actual_play_area_size[1] - buffer
+        if self.rect.top < self.fh.tile_size:
+            self.rect.top = self.fh.tile_size
+        if self.rect.right > self.fh.actual_play_area_size[0] - buffer:
+            self.rect.right = self.fh.actual_play_area_size[0] - buffer
         if self.rect.left < buffer:
             self.rect.left = buffer
 
@@ -74,14 +76,15 @@ class Player(pygame.sprite.Sprite):
 
 
 class PlayerScore(pygame.sprite.Sprite):
-    def __init__(self, game, player):
+    def __init__(self, game, player, fullscreen_helper):
         self.player = player
         self.game = game
-        self.font = pygame.font.SysFont(None, 48)
+        self.fh = fullscreen_helper
+        self.font = pygame.font.SysFont(None, self.fh.actual_subheader_font_size)
         self.image = self.font.render(f'SCORE: 0', True, TEXT_COLOR)
         self.rect = self.image.get_rect()
-        self.rect.x = TILE_SIZE
-        self.rect.y = SCREEN_HEIGHT - TILE_SIZE
+        self.rect.x = self.fh.tile_size
+        self.rect.y = self.fh.actual_play_area_size[1] - self.fh.tile_size
         self.groups = self.game.all_sprites_group
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -90,14 +93,15 @@ class PlayerScore(pygame.sprite.Sprite):
 
 
 class GameTimer(pygame.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, game, fullscreen_helper):
         self.game = game
+        self.fh = fullscreen_helper
         self.start_ticks = pygame.time.get_ticks()
         self.groups = self.game.all_sprites_group
-        self.font = pygame.font.SysFont(None, 60)
+        self.font = pygame.font.SysFont(None, self.fh.actual_header_font_size)
         self.image = self.font.render(f'{START_TIME}', True, TEXT_COLOR)
         self.rect = self.image.get_rect()
-        self.rect.x = (SCREEN_WIDTH // 2) - TILE_SIZE
+        self.rect.x = (self.fh.actual_play_area_size[0] // 2) - self.fh.tile_size
         self.rect.y = 0
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -113,14 +117,14 @@ class GameTimer(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, speed):
+    def __init__(self, game, x, y, speed, tile_size):
         self.onScreen = True
         self.game = game
         self.moveSpeed = speed
         self.explosionFx = pygame.mixer.Sound('sounds/explosion.wav')
         self.explosionFx.set_volume(GLOBAL_VOLUME)
         self.groups = [self.game.all_sprites_group, self.game.enemy_group]
-        self.right_image = pygame.transform.scale(pygame.image.load('img/enemy.png'), (TILE_SIZE, TILE_SIZE))
+        self.right_image = pygame.transform.scale(pygame.image.load('img/enemy.png'), (tile_size, tile_size))
         self.left_image = pygame.transform.flip(self.right_image, 180, 0)
         self.image = self.right_image
         self.rect = self.image.get_rect()
