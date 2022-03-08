@@ -15,8 +15,8 @@ class World:
             for tile in row:
                 if tile == 1:
                     img_rect = treeImg.get_rect()
-                    img_rect.x = col_cnt * self.fh.tile_size
-                    img_rect.y = row_cnt * self.fh.tile_size
+                    img_rect.x = col_cnt * self.fh.tile_size + self.fh.play_area_offset['x']
+                    img_rect.y = row_cnt * self.fh.tile_size + self.fh.play_area_offset['y']
                     tile = (treeImg, img_rect)
                     self.tileList.append(tile)
                 col_cnt += 1
@@ -26,7 +26,7 @@ class World:
         while len(self.game.coin_group.sprites()) < MAX_COIN_COUNT:
             x = random.randint(1, 18)
             y = random.randint(1, 18)
-            Coin(self.game, x * self.fh.tile_size, y * self.fh.tile_size, self.fh.tile_size)
+            Coin(self.game, x * self.fh.tile_size, y * self.fh.tile_size, self.fh)
             if pygame.sprite.spritecollide(self.game.player, self.game.coin_group, True):
                 self.add_coins()
 
@@ -35,7 +35,7 @@ class World:
             x = random.randint(3, 18)
             y = random.randint(3, 18)
             speed = random.randint(1, 3)
-            Enemy(self.game, x * self.fh.tile_size,  y * self.fh.tile_size, speed, self.fh.tile_size)
+            Enemy(self.game, x * self.fh.tile_size,  y * self.fh.tile_size, speed, self.fh)
 
     def draw(self):
         self.game.screen.blit(self.game.bg, (0, 0))
