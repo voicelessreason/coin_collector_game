@@ -3,19 +3,22 @@ from config import *
 
 
 class Coin(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.image = pygame.transform.scale(pygame.image.load('img/coin.png'), (TILE_SIZE // 2, TILE_SIZE // 2))
+    def __init__(self, game, x, y, fullscreen_helper):
+        self.fh = fullscreen_helper
+        self.image = pygame.transform.scale(pygame.image.load('img/coin.png'), (self.fh.tile_size // 2, self.fh.tile_size // 2))
         self.game = game
         self.groups = [self.game.all_sprites_group, self.game.coin_group]
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x + self.fh.play_area_offset['x']
+        self.rect.y = y + self.fh.play_area_offset['y']
         pygame.sprite.Sprite.__init__(self, self.groups)
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.right_image = pygame.transform.scale(pygame.image.load('img/player.png'), (TILE_SIZE, TILE_SIZE))
+    def __init__(self, game, fullscreen_helper):
+        self.fh = fullscreen_helper
+        self.tile_dimensions = (self.fh.tile_size, self.fh.tile_size)
+        self.right_image = pygame.transform.scale(pygame.image.load('img/player.png'), self.tile_dimensions)
         self.left_image = pygame.transform.flip(self.right_image, 180, 0)
         self.image = self.right_image
         self.coinFx = pygame.mixer.Sound('sounds/coin.wav')
@@ -25,8 +28,8 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.groups = self.game.all_sprites_group
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = self.tile_dimensions[0] + self.fh.play_area_offset['x']
+        self.rect.y = self.tile_dimensions[1] + self.fh.play_area_offset['y']
         self.score = 0
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -53,15 +56,20 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += dy
 
         # Bind the player within the world
-        buffer = TILE_SIZE
-        if self.rect.bottom > SCREEN_HEIGHT - buffer:
-            self.rect.bottom = SCREEN_HEIGHT - buffer
-        if self.rect.top < TILE_SIZE:
-            self.rect.top = TILE_SIZE
-        if self.rect.right > SCREEN_WIDTH - buffer:
-            self.rect.right = SCREEN_WIDTH - buffer
-        if self.rect.left < buffer:
-            self.rect.left = buffer
+        buffer = self.fh.tile_size
+        offset_bottom = self.fh.play_area_offset['y'] - buffer
+        offset_top = self.fh.play_area_offset['y'] + buffer
+        offset_right = self.fh.play_area_offset['x'] - buffer
+        offset_left = self.fh.play_area_offset['x'] + buffer
+
+        if self.rect.bottom > self.fh.actual_play_area_size[1] + offset_bottom:
+            self.rect.bottom = self.fh.actual_play_area_size[1] + offset_bottom
+        if self.rect.top < offset_top:
+            self.rect.top = offset_top
+        if self.rect.right > self.fh.actual_play_area_size[0] + offset_right:
+            self.rect.right = self.fh.actual_play_area_size[0] + offset_right
+        if self.rect.left < offset_left:
+            self.rect.left = offset_left
 
         # check if we've hit a coin
         if pygame.sprite.spritecollide(self, self.game.coin_group, True):
@@ -74,14 +82,15 @@ class Player(pygame.sprite.Sprite):
 
 
 class PlayerScore(pygame.sprite.Sprite):
-    def __init__(self, game, player):
+    def __init__(self, game, player, fullscreen_helper):
         self.player = player
         self.game = game
-        self.font = pygame.font.SysFont(None, 48)
+        self.fh = fullscreen_helper
+        self.font = pygame.font.SysFont(None, self.fh.actual_subheader_font_size)
         self.image = self.font.render(f'SCORE: 0', True, TEXT_COLOR)
         self.rect = self.image.get_rect()
-        self.rect.x = TILE_SIZE
-        self.rect.y = SCREEN_HEIGHT - TILE_SIZE
+        self.rect.x = self.fh.tile_size
+        self.rect.y = self.fh.actual_play_area_size[1] - self.fh.tile_size
         self.groups = self.game.all_sprites_group
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -90,15 +99,16 @@ class PlayerScore(pygame.sprite.Sprite):
 
 
 class GameTimer(pygame.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, game, fullscreen_helper):
         self.game = game
+        self.fh = fullscreen_helper
         self.start_ticks = pygame.time.get_ticks()
         self.groups = self.game.all_sprites_group
-        self.font = pygame.font.SysFont(None, 60)
+        self.font = pygame.font.SysFont(None, self.fh.actual_header_font_size)
         self.image = self.font.render(f'{START_TIME}', True, TEXT_COLOR)
         self.rect = self.image.get_rect()
-        self.rect.x = (SCREEN_WIDTH // 2) - TILE_SIZE
-        self.rect.y = 0
+        self.rect.x = self.fh.desktop_resolution[0] - self.image.get_width() - self.fh.tile_size
+        self.rect.y = self.fh.tile_size
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def update(self):
@@ -113,19 +123,20 @@ class GameTimer(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, speed):
+    def __init__(self, game, x, y, speed, fullscreen_helper):
         self.onScreen = True
         self.game = game
         self.moveSpeed = speed
+        self.fh = fullscreen_helper
         self.explosionFx = pygame.mixer.Sound('sounds/explosion.wav')
         self.explosionFx.set_volume(GLOBAL_VOLUME)
         self.groups = [self.game.all_sprites_group, self.game.enemy_group]
-        self.right_image = pygame.transform.scale(pygame.image.load('img/enemy.png'), (TILE_SIZE, TILE_SIZE))
+        self.right_image = pygame.transform.scale(pygame.image.load('img/enemy.png'), (self.fh.tile_size, self.fh.tile_size))
         self.left_image = pygame.transform.flip(self.right_image, 180, 0)
         self.image = self.right_image
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x + self.fh.play_area_offset['x']
+        self.rect.y = y + self.fh.play_area_offset['y']
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def destroy(self):

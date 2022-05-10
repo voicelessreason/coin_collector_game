@@ -1,5 +1,7 @@
 import sys
 from pygame import mixer
+from fullscreen_helper import FullscreenHelper
+from text_helper import TextHelper
 from world import World
 from sprites import *
 from config import *
@@ -12,17 +14,27 @@ class Game:
         pygame.init()
         pygame.mixer.music.load('sounds/theme.wav')
         pygame.mixer.music.set_volume(GLOBAL_VOLUME)
+
+        desktop_size = pygame.display.get_desktop_sizes()[0]
+        self.fh = FullscreenHelper(desktop_size)
+
+        self.th = TextHelper(self.fh)
+        self.header_font = pygame.font.SysFont(None, self.fh.actual_header_font_size)
+        self.subheader_font = pygame.font.SysFont(None, self.fh.actual_subheader_font_size)
+        
         self.bg = pygame.image.load('img/space.jpeg')
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        # Scale the background image to match the desktop resolution
+        self.bg = pygame.transform.scale(self.bg, self.fh.desktop_resolution)
+        self.screen = pygame.display.set_mode(self.fh.desktop_resolution)
         self.running = True
 
     def intro_screen(self):
-        self.font = pygame.font.SysFont(None, 60)
         self.screen.blit(self.bg, (0, 0))
-        begin_text = self.font.render('Press Space to Begin', True, TEXT_COLOR)
-        begin_rect = ((SCREEN_WIDTH // 4) + TILE_SIZE, SCREEN_HEIGHT // 3)
 
-        self.screen.blit(begin_text, begin_rect)
+        def position_intro(text):
+            return (self.fh.get_centered_text_position(text.get_size())[0], self.fh.play_area_center['y'] // 3)
+            
+        self.th.blit_text('Press Space to Begin', self.header_font, position_intro, self.screen)
 
         while self.running:
             for event in pygame.event.get():
@@ -52,10 +64,10 @@ class Game:
         self.coin_group = pygame.sprite.Group()
         self.enemy_group = pygame.sprite.Group()
         self.explosion_group = pygame.sprite.Group()
-        self.world = World(self, WORLD_DATA)
-        self.player = Player(self, TILE_SIZE, TILE_SIZE)
-        self.scoreboard = PlayerScore(self, self.player)
-        self.game_timer = GameTimer(self)
+        self.world = World(self, WORLD_DATA, self.fh)
+        self.player = Player(self, self.fh)
+        self.scoreboard = PlayerScore(self, self.player, self.fh)
+        self.game_timer = GameTimer(self, self.fh)
 
     # Process any global events
     def events(self):
@@ -77,19 +89,6 @@ class Game:
         pygame.display.update()
 
     def game_over(self):
-        header_font = pygame.font.SysFont(None, 60)
-        subheader_font = pygame.font.SysFont(None, 40)
-        game_over_text = header_font.render('GAME OVER!', True, TEXT_COLOR)
-        score_text = subheader_font.render(f'Score: {self.player.score}', True, TEXT_COLOR)
-        retry_text = subheader_font.render('Press Space to Play Again', True, TEXT_COLOR)
-        quit_text = subheader_font.render('Press Escape to Quit', True, TEXT_COLOR)
-
-        text_x = (SCREEN_WIDTH // 3) + TILE_SIZE
-        game_over_location = (text_x, SCREEN_HEIGHT // 2.5)
-        score_location = (text_x, SCREEN_HEIGHT // 2)
-        retry_location = (text_x, SCREEN_HEIGHT // 1.9)
-        quit_location = (text_x, SCREEN_HEIGHT // 1.8)
-
         for sprite in self.all_sprites_group:
             sprite.kill()
 
@@ -112,10 +111,20 @@ class Game:
 
             self.screen.blit(self.bg, (0, 0))
             self.world.draw()
-            self.screen.blit(game_over_text, game_over_location)
-            self.screen.blit(score_text, score_location)
-            self.screen.blit(retry_text, retry_location)
-            self.screen.blit(quit_text, quit_location)
+
+            def position_game_over(text):
+                return (self.fh.get_centered_text_position(text.get_size())[0], self.fh.actual_play_area_size[1] // 2.5)
+            def position_score(text):
+                return (self.fh.get_centered_text_position(text.get_size())[0], self.fh.actual_play_area_size[1] // 2)
+            def position_retry(text):
+                return (self.fh.get_centered_text_position(text.get_size())[0], self.fh.actual_play_area_size[1] // 1.9)
+            def position_quit(text):
+                return (self.fh.get_centered_text_position(text.get_size())[0], self.fh.actual_play_area_size[1] // 1.8)
+            
+            self.th.blit_text('GAME OVER!', self.header_font, position_game_over, self.screen)
+            self.th.blit_text(f'Score: {self.player.score}', self.subheader_font, position_score, self.screen)
+            self.th.blit_text('Press Space to Play Again', self.subheader_font, position_retry, self.screen)
+            self.th.blit_text('Press Escape to Quit', self.subheader_font, position_quit, self.screen)
             pygame.display.update()
 
 
