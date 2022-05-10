@@ -1,6 +1,5 @@
 from config import *
 
-
 class FullscreenHelper:
    
    def __init__(self, desktop_resolution):
@@ -8,7 +7,7 @@ class FullscreenHelper:
       Attributes:
       ~~~~~~~~~~~      
       As Parameters:
-      desktop_size: The tuple returned by pygame.display.get_desktop_sizes()[0]
+      desktop_resolution: The tuple returned by pygame.display.get_desktop_sizes()[0]
          play_area_upper_bound is the maximum.
 
       From config.py:
@@ -18,8 +17,8 @@ class FullscreenHelper:
       base_subheader_font_size: The base size of the subheader font.
 
       Calculated on instantiation:
-      smaller_screen_dimension: The smaller dimension of desktop_size
-      larger_screen_dimension: The larger dimension of desktop_size.
+      smaller_screen_dimension: The smaller dimension of desktop_resolution (either width or height).
+      larger_screen_dimension: The larger dimension of desktop_resolution.
       actual_play_area_size: A tuple of two equal values. The size of the play area (bounded by the rock border).
          Determined by smaller_screen_dimension to ensure that the entire play area always fits on the screen.
       scaling_ratio: Responsible for scaling font sizes up and down.
