@@ -139,10 +139,14 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y = y + self.fh.play_area_offset['y']
         pygame.sprite.Sprite.__init__(self, self.groups)
 
-    def update(self):
-        if self.onScreen == False:
-            return
+    def destroy(self):
+        Explosion(self.game, self.rect.x, self.rect.y)
+        self.explosionFx.play()
+        self.game.enemy_group.remove(self)
+        self.game.player.score += 5
+        self.kill()
 
+    def update(self):
         dx = 0
         dy = 0
         xdiff = self.rect.x - self.game.player.rect.x + random.randint(-10, 10)
@@ -160,15 +164,9 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x += dx
         self.rect.y += dy
 
-        collisions = pygame.sprite.spritecollide(self, self.game.enemy_group, False)
-        if len(collisions) > 2:
-            self.explosionFx.play()
-            Explosion(self.game, self.rect.x, self.rect.y)
-            self.onScreen = False
-            self.rect.x = -1000
-            self.rect.y = -1000
-            self.game.enemy_group.remove(self)
-            self.game.player.score += 5
+        enemyCollisions = pygame.sprite.spritecollide(self, self.game.enemy_group, False)
+        if len(enemyCollisions) > 2:
+            self.destroy()
 
 
 class Explosion(pygame.sprite.Sprite):
